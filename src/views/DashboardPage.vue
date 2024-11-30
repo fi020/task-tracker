@@ -4,9 +4,9 @@
       <h2>Your Tasks</h2>
       <ul v-if="tasks.length > 0">
         <li v-for="task in tasks" :key="task.id">
-          <div>title - {{ task.title }}</div>
-          <div>desc - {{ task.description }}</div>
-          <div>Completed: {{ task.completed }} </div>
+          <div>Title: {{ task.title }}</div>
+          <div>Description: {{ task.description }}</div>
+          <div>Completed: {{ task.completed }}</div>
           <button @click="openEditForm(task)">Edit</button>
           <button @click="deleteTask(task._id)">Delete</button>
         </li>
@@ -46,14 +46,26 @@
       };
     },
     async created() {
-      await this.fetchTasks(); // Fetch tasks on load
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          // Redirect to login if no token is present
+          this.$router.push("/login");
+        } else {
+          // Fetch tasks if logged in
+          await this.fetchTasks();
+        }
+      } catch (error) {
+        console.error("Error during authentication check:", error.message);
+        this.$router.push("/login"); // Redirect in case of any error
+      }
     },
     methods: {
       async fetchTasks() {
         try {
           const token = localStorage.getItem("token");
           const apiUrl = process.env.VUE_APP_API_URL;
-
+  
           const response = await axios.get(`${apiUrl}/tasks`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -69,7 +81,7 @@
         try {
           const token = localStorage.getItem("token");
           const apiUrl = process.env.VUE_APP_API_URL;
-
+  
           await axios.delete(`${apiUrl}/tasks/${taskId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -88,6 +100,7 @@
     },
   };
   </script>
+  
   
   <style scoped>
   button {
