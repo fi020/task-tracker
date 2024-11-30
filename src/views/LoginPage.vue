@@ -30,7 +30,8 @@
       async submitForm() {
         try {
           // Send login request to the backend
-          const response = await axios.post("http://localhost:3000/user/login", {
+          const apiUrl = process.env.VUE_APP_API_URL;
+          const response = await axios.post(`${apiUrl}/user/login`, {
             username: this.username,
             password: this.password,
           });
