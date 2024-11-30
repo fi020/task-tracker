@@ -6,8 +6,9 @@
         <li v-for="task in tasks" :key="task.id">
           <div>title - {{ task.title }}</div>
           <div>desc - {{ task.description }}</div>
-            <div>Completed: {{ task.completed }} </div>
+          <div>Completed: {{ task.completed }} </div>
           <button @click="openEditForm(task)">Edit</button>
+          <button @click="deleteTask(task._id)">Delete</button>
         </li>
       </ul>
       <p v-else>No tasks available.</p>
@@ -62,6 +63,17 @@
       openEditForm(task) {
         this.editTaskData = { ...task }; // Clone task to avoid live editing
       },
+      async deleteTask(taskId) {
+        try {
+          const token = localStorage.getItem("token");
+          await axios.delete(`http://localhost:3000/tasks/${taskId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          this.fetchTasks(); // Refresh task list after deletion
+        } catch (error) {
+          console.error("Error deleting task:", error.message);
+        }
+      },
       handleTaskUpdated() {
         this.editTaskData = null; // Close the edit form
         this.fetchTasks(); // Refresh tasks
@@ -81,6 +93,10 @@
     padding: 10px;
     cursor: pointer;
     margin-left: 10px;
+  }
+  
+  button:last-child {
+    background-color: #e74c3c; /* Red color for delete button */
   }
   
   ul {

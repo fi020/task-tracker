@@ -38,19 +38,20 @@
   
           // Send title and description only
           const response = await axios.post(
-            "http://localhost:3000/tasks",
-            {
-              title: this.newTask.title,
-              description: this.newTask.description,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-  
-          console.log(response.data);
+              `http://localhost:3000/tasks`,
+              {
+                  title: this.newTask.title,
+                  description: this.newTask.description,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            
+            console.log(response.data);
+
   
           // Emit event to parent to refresh tasks list
           this.$emit("task-created");
