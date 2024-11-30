@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import axios from "axios"; // Import Axios
+
 export default {
   name: 'SignupPage',
   data() {
@@ -30,18 +32,27 @@ export default {
     };
   },
   methods: {
-    submitForm() {
+    async submitForm() {
       if (this.password !== this.confirmPassword) {
         alert("Passwords do not match!");
         return;
       }
-      
-      // Here, you would make an API call to your backend to register the user.
-      // For now, we'll just print the details to the console for demonstration.
-      console.log("User Registered:", this.username, this.password);
 
-      // After successful registration, you can redirect to login or other pages
-      this.$router.push('/login');
+      try {
+        const response = await axios.post("http://localhost:3000/user/signup", {
+          username: this.username,
+          password: this.password,
+        });
+        
+        console.log("Response:", response.data);
+        alert("Signup successful!");
+
+        // Redirect to the login page after successful registration
+        this.$router.push('/login');
+      } catch (error) {
+        console.error("Signup error:", error.response ? error.response.data : error.message);
+        alert("Signup failed. Please try again.");
+      }
     },
   },
 };
@@ -54,6 +65,7 @@ form {
   flex-direction: column;
   max-width: 300px;
   margin: auto;
+  color: white;
 }
 
 input {

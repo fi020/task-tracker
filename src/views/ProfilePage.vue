@@ -1,24 +1,49 @@
 <template>
     <div>
       <h1>Profile</h1>
-      <p>Welcome, <strong>{{ username }}</strong>!</p>
+      <p v-if="username">Welcome, <strong>{{ username }}</strong>!</p>
+      <p v-else>Loading user details...</p>
       <button @click="logout">Logout</button>
     </div>
   </template>
   
   <script>
+  import axios from "axios";
+  
   export default {
-    name: 'ProfilePage',
+    name: "ProfilePage",
     data() {
       return {
-        username: 'John Doe', // Replace this with actual data from the store or API
+        username: null, // Will be set after fetching user details
       };
+    },
+    async created() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found. Please log in.");
+        }
+  
+        // Fetch user details from the backend
+        const response = await axios.get("http://localhost:3000/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        // Set user details
+        this.username = response.data.username;
+      } catch (error) {
+        console.error("Error fetching user details:", error.message);
+        alert("Session expired or invalid. Please log in again.");
+        this.$router.push("/login");
+      }
     },
     methods: {
       logout() {
-        // Placeholder for logout functionality
-        console.log('User logged out');
-        this.$router.push('/login'); // Redirect to login after logout
+        // Clear token and redirect to login
+        localStorage.removeItem("token");
+        this.$router.push("/login");
       },
     },
   };
