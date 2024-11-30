@@ -40,8 +40,10 @@
       async updateTask() {
         try {
           const token = localStorage.getItem("token");
+          const apiUrl = process.env.VUE_APP_API_URL;
+
           const response = await axios.patch(
-            `http://localhost:3000/tasks/${this.updatedTask._id}`,
+            `${apiUrl}/tasks/${this.updatedTask._id}`,
             {
               title: this.updatedTask.title,
               description: this.updatedTask.description,

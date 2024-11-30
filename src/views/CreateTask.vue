@@ -37,8 +37,9 @@
           }
   
           // Send title and description only
+          const apiUrl = process.env.VUE_APP_API_URL;
           const response = await axios.post(
-              `http://localhost:3000/tasks`,
+              `${apiUrl}/tasks`,
               {
                   title: this.newTask.title,
                   description: this.newTask.description,

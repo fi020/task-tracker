@@ -52,7 +52,9 @@
       async fetchTasks() {
         try {
           const token = localStorage.getItem("token");
-          const response = await axios.get("http://localhost:3000/tasks", {
+          const apiUrl = process.env.VUE_APP_API_URL;
+
+          const response = await axios.get(`${apiUrl}/tasks`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.tasks = response.data;
@@ -66,7 +68,9 @@
       async deleteTask(taskId) {
         try {
           const token = localStorage.getItem("token");
-          await axios.delete(`http://localhost:3000/tasks/${taskId}`, {
+          const apiUrl = process.env.VUE_APP_API_URL;
+
+          await axios.delete(`${apiUrl}/tasks/${taskId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.fetchTasks(); // Refresh task list after deletion
