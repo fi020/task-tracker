@@ -44,7 +44,7 @@
         //   alert("Login successful!");
   
           // Redirect to the profile page
-          this.$router.push("/profile");
+          this.$router.push("/dashboard");
         } catch (error) {
           console.error("Login error:", error.response ? error.response.data : error.message);
           alert("Login failed. Please check your credentials and try again.");
@@ -60,6 +60,7 @@
     margin: auto;
     display: flex;
     flex-direction: column;
+    color: wheat;
   }
   input {
     margin-bottom: 10px;
