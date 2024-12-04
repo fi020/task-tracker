@@ -16,19 +16,39 @@
   </template>
   
   <script>
+  import axios from "axios";
+  
   export default {
-    name: 'LoginPage',
+    name: "LoginPage",
     data() {
       return {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
       };
     },
     methods: {
-      submitForm() {
-        // Placeholder for API integration
-        console.log('User logged in:', this.username);
-        this.$router.push('/profile'); // Redirect to profile after login
+      async submitForm() {
+        try {
+          // Send login request to the backend
+          const response = await axios.post("http://localhost:3000/user/login", {
+            username: this.username,
+            password: this.password,
+          });
+  
+          // Extract the token from the response
+          const token = response.data.token;
+  
+          // Store the token securely
+          localStorage.setItem("token", token);
+  
+        //   alert("Login successful!");
+  
+          // Redirect to the profile page
+          this.$router.push("/dashboard");
+        } catch (error) {
+          console.error("Login error:", error.response ? error.response.data : error.message);
+          alert("Login failed. Please check your credentials and try again.");
+        }
       },
     },
   };
@@ -40,6 +60,7 @@
     margin: auto;
     display: flex;
     flex-direction: column;
+    color: wheat;
   }
   input {
     margin-bottom: 10px;
