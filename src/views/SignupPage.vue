@@ -16,6 +16,11 @@
       </div>
       <button type="submit">Sign Up</button>
     </form>
+    <p>or</p>
+    <button class="login">
+      <router-link to="/login">Login</router-link>
+    </button>
+  
   </div>
 </template>
 
@@ -78,5 +83,13 @@ button {
   padding: 10px;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
+
+}
+button a{
+  text-decoration: none;
+}
+.login{
+  border-radius: 5px;
 }
 </style>
