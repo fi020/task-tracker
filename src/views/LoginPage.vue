@@ -63,16 +63,25 @@ export default {
 
 <style scoped>
 form {
-  max-width: 400px;
+  max-width: 300px;
   margin: auto;
   display: flex;
   flex-direction: column;
   /* color: wheat; */
+  align-items: center;
+
 }
 
 input {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding: 5px;
+  border-radius: 5px;
+}
+form button{
+  width: 100%;
+  max-width: 200px;
+  
+
 }
 
 button {
@@ -81,6 +90,9 @@ button {
   border: none;
   padding: 10px;
   cursor: pointer;
+  border-radius: 5px;
+  /* width: 10px; */
+
 }
 button a{
   text-decoration: none;
