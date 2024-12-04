@@ -1,4 +1,5 @@
 # tut
+# need to learn some advance functionalities of git and github
 # remove the env file from all branches as accidently push
 git filter-branch --index-filter "git rm -rf --cached --ignore-unmatch .env" --prune-empty --tag-name-filter cat -- --all
 
