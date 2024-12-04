@@ -65,7 +65,7 @@ form {
   flex-direction: column;
   max-width: 300px;
   margin: auto;
-  color: white;
+  /* color: white; */
 }
 
 input {
@@ -74,7 +74,7 @@ input {
 
 button {
   background-color: #4CAF50;
-  color: white;
+  /* color: white; */
   padding: 10px;
   border: none;
   cursor: pointer;

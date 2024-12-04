@@ -117,7 +117,7 @@
   }
   
   ul {
-    color: white;
+    /* color: white; */
     list-style-type: none;
     padding-left: 0;
   }
