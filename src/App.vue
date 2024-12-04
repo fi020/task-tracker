@@ -6,18 +6,22 @@
         <router-link to="/">TaskTracker</router-link>
       </div>
       <ul class="navbar-links">
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/signup">Signup</router-link></li>
-        <li><router-link to="/login">Login</router-link></li>
-        <li><router-link to="/profile">Profile</router-link></li>
-        <li><router-link to="/dashboard">Dashboard</router-link></li>
+        <li><router-link to="/" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Home</router-link></li>
+        <li v-if="!isLoggedIn"><router-link to="/signup" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Signup</router-link></li>
+        <li v-if="!isLoggedIn"><router-link to="/login" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Login</router-link></li>
+        <li v-if="isLoggedIn"><router-link to="/profile" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Profile</router-link></li>
+        <li v-if="isLoggedIn"><router-link to="/dashboard" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Dashboard</router-link></li>
       </ul>
-      <button class="theme-toggle" @click="toggleTheme">
-        {{ isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode' }}
-      </button>
+<div class="right-buttons">
+
+  <button class="logout" v-if="isLoggedIn" @click="logout">Logout</button>
+  
+  <button class="theme-toggle" @click="toggleTheme">
+    {{ isDarkMode ? '☀️' : '🌙' }}
+  </button>
+</div>
     </nav>
 
-    <!-- Render the routed component -->
     <router-view></router-view>
   </div>
 </template>
@@ -28,6 +32,7 @@ export default {
   data() {
     return {
       isDarkMode: false, // Track light/dark mode
+      isLoggedIn: false,
     };
   },
   mounted() {
@@ -35,6 +40,10 @@ export default {
     const savedTheme = localStorage.getItem('theme');
     this.isDarkMode = savedTheme === 'dark';
     this.applyTheme();
+    this.checkLoginStatus();
+
+    window.addEventListener('storage', this.checkLoginStatus);
+
   },
   methods: {
     toggleTheme() {
@@ -46,6 +55,18 @@ export default {
       document.documentElement.setAttribute('data-theme', this.isDarkMode ? 'dark' : 'light');
       localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
     },
+    checkLoginStatus() {
+      const token = localStorage.getItem('token');
+      this.isLoggedIn = !!token; // Update login state
+      console.log('Login status updated:', this.isLoggedIn);
+    },
+    logout() {
+        // Clear token and redirect to login
+        localStorage.removeItem("token");
+        window.dispatchEvent(new Event('storage')); // Trigger the storage event
+
+        this.$router.push("/login");
+      },
   },
 };
 </script>
@@ -112,7 +133,16 @@ export default {
 }
 
 .navbar-links a:hover {
+/* .navbar-links a.light-theme:hover { */
   color: var(--bg-color);
+  /* color: #050504; Dark mode hover color */
+  /* background-color: var(--navbar-text-color); */
+}
+/* .navbar-links a.light-theme:hover {
+  color: #42b983;
+} */
+.right-buttons button{
+  margin: 0 4px;
 }
 
 .theme-toggle {
@@ -127,6 +157,21 @@ export default {
 }
 
 .theme-toggle:hover {
+  background-color: var(--navbar-text-color);
+  color: var(--navbar-bg-color);
+}
+
+.logout {
+  background: none;
+  border: 2px solid var(--navbar-text-color);
+  padding: 5px 10px;
+  color: var(--navbar-text-color);
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+.logout:hover {
   background-color: var(--navbar-text-color);
   color: var(--navbar-bg-color);
 }

@@ -46,6 +46,8 @@
       logout() {
         // Clear token and redirect to login
         localStorage.removeItem("token");
+        window.dispatchEvent(new Event('storage')); // Trigger the storage event
+
         this.$router.push("/login");
       },
     },
@@ -55,7 +57,7 @@
   <style scoped>
   button {
     background-color: red;
-    color: white;
+    /* color: white; */
     border: none;
     padding: 10px;
     cursor: pointer;
