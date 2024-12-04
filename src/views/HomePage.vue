@@ -18,5 +18,10 @@
   h1 {
     color: #42b983;
   }
+  p a{
+    text-decoration: none;
+    font-weight: bold;
+color: #42b983;
+  }
   </style>
   
