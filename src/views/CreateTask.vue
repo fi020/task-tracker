@@ -57,7 +57,7 @@
           // Emit event to parent to refresh tasks list
           this.$emit("task-created");
           this.newTask = { title: "", description: "" }; // Reset form
-          alert("Task created successfully!");
+          // alert("Task created successfully!");
         } catch (error) {
           console.error("Error creating task:", error.message);
           alert("Failed to create task. Please try again.");

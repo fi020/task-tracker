@@ -78,16 +78,20 @@
         this.editTaskData = { ...task }; // Clone task to avoid live editing
       },
       async deleteTask(taskId) {
-        try {
-          const token = localStorage.getItem("token");
-          const apiUrl = process.env.VUE_APP_API_URL;
-  
-          await axios.delete(`${apiUrl}/tasks/${taskId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          this.fetchTasks(); // Refresh task list after deletion
-        } catch (error) {
-          console.error("Error deleting task:", error.message);
+        const isConfirmed = window.confirm("Are you sure you want to delete this task?");
+
+        if (isConfirmed) {
+          try {
+            const token = localStorage.getItem("token");
+            const apiUrl = process.env.VUE_APP_API_URL;
+    
+            await axios.delete(`${apiUrl}/tasks/${taskId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            this.fetchTasks(); // Refresh task list after deletion
+          } catch (error) {
+            console.error("Error deleting task:", error.message);
+          }
         }
       },
       handleTaskUpdated() {

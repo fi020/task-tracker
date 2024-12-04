@@ -38,30 +38,34 @@
     },
     methods: {
       async updateTask() {
-        try {
-          const token = localStorage.getItem("token");
+        const confirmedUpdate = window.confirm("Are you sure you want to update this task?");
 
-          const apiUrl = process.env.VUE_APP_API_URL;
-
-          const response = await axios.patch(
-            `${apiUrl}/tasks/${this.updatedTask._id}`,
-
-            {
-              title: this.updatedTask.title,
-              description: this.updatedTask.description,
-              completed: this.updatedTask.completed,
-            },
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+        if (confirmedUpdate) {
+          try {
+            const token = localStorage.getItem("token");
   
-          console.log(response.data);
-          alert("Task updated successfully!");
-          this.$emit("task-updated"); // Notify parent to refresh tasks
-        } catch (error) {
-          console.error("Error updating task:", error.message);
-          alert("Failed to update task. Please try again.");
+            const apiUrl = process.env.VUE_APP_API_URL;
+  
+            const response = await axios.patch(
+              `${apiUrl}/tasks/${this.updatedTask._id}`,
+  
+              {
+                title: this.updatedTask.title,
+                description: this.updatedTask.description,
+                completed: this.updatedTask.completed,
+              },
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+    
+            console.log(response.data);
+            // alert("Task updated successfully!");
+            this.$emit("task-updated"); // Notify parent to refresh tasks
+          } catch (error) {
+            console.error("Error updating task:", error.message);
+            alert("Failed to update task. Please try again.");
+          }
         }
       },
     },
