@@ -37,9 +37,9 @@ export default {
         alert("Passwords do not match!");
         return;
       }
-
+      const apiUrl = process.env.VUE_APP_API_URL;
       try {
-        const response = await axios.post("http://localhost:3000/user/signup", {
+        const response = await axios.post(`${apiUrl}/user/signup`, {
           username: this.username,
           password: this.password,
         });

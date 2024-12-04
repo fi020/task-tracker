@@ -27,7 +27,8 @@
         }
   
         // Fetch user details from the backend
-        const response = await axios.get("http://localhost:3000/user/profile", {
+        const apiUrl = process.env.VUE_APP_API_URL;
+        const response = await axios.get(`${apiUrl}/user/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
