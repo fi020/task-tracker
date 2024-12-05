@@ -1,138 +1,38 @@
-<!-- <template>
-    <div>
-      <h3>Edit Task</h3>
-      <form @submit.prevent="updateTask">
-        <div>
-          <label for="title">Title:</label>
-          <input v-model="updatedTask.title" type="text" id="title" required />
-        </div>
-        <div>
-          <label for="description">Description:</label>
-          <input v-model="updatedTask.description" type="text" id="description" required />
-        </div>
-        <div>
-          <label for="completed">Completed:</label>
-          <input v-model="updatedTask.completed" type="checkbox" id="completed" />
-        </div>
-        <button type="submit">Save Changes</button>
-        <button type="button" @click="$emit('cancel-edit')">Cancel</button>
-      </form>
-    </div>
-  </template>
-  
-  <script>
-  import axios from "axios";
-  
-  export default {
-    name: "EditTask",
-    props: {
-      task: {
-        type: Object,
-        required: true,
-      },
-    },
-    data() {
-      return {
-        updatedTask: { ...this.task }, // Clone the task to edit
-      };
-    },
-    methods: {
-      async updateTask() {
-        const confirmedUpdate = window.confirm("Are you sure you want to update this task?");
-
-        if (confirmedUpdate) {
-          try {
-            const token = localStorage.getItem("token");
-  
-            const apiUrl = process.env.VUE_APP_API_URL;
-  
-            const response = await axios.patch(
-              `${apiUrl}/tasks/${this.updatedTask._id}`,
-  
-              {
-                title: this.updatedTask.title,
-                description: this.updatedTask.description,
-                completed: this.updatedTask.completed,
-              },
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-    
-            console.log(response.data);
-            // alert("Task updated successfully!");
-            this.$emit("task-updated"); // Notify parent to refresh tasks
-          } catch (error) {
-            console.error("Error updating task:", error.message);
-            alert("Failed to update task. Please try again.");
-          }
-        }
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  form {
-    margin-top: 20px;
-  }
-  
-  input {
-    margin-bottom: 10px;
-    padding: 5px;
-  }
-  
-  button {
-    background-color: #42b983;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  </style>
-   -->
-
-
-
-   <template>
-    <div class="editTaskForm">
-      <h3>Edit Task</h3>
-      <form @submit.prevent="updateTask">
-        <div>
-          <label for="title">Title:</label>
-          <input v-model="updatedTask.title" type="text" id="title" required />
-          <p>
-            Words: {{ titleWordCount }}/15
-            <span v-if="titleWordCount > 15" style="color: red;">
-              (Exceeds limit!)
-            </span>
-          </p>
-        </div>
-        <div>
-          <label for="description">Description:</label>
-          <input v-model="updatedTask.description" type="text" id="description" required />
-          <p>
-            Words: {{ descriptionWordCount }}/50
-            <span v-if="descriptionWordCount > 50" style="color: red;">
-              (Exceeds limit!)
-            </span>
-          </p>
-        </div>
-        <div>
-          <label for="completed">Completed:</label>
-          <input v-model="updatedTask.completed" type="checkbox" id="completed" />
-        </div>
-        <button
-          type="submit"
-          :disabled="titleWordCount > 15 || descriptionWordCount > 50"
-        >
-          Save Changes
-        </button>
-        <button type="button" @click="$emit('cancel-edit')">Cancel</button>
-      </form>
-    </div>
-  </template>
+<template>
+  <div class="editTaskForm">
+    <h3>Edit Task</h3>
+    <form @submit.prevent="updateTask">
+      <div>
+        <label for="title">Title:</label>
+        <input v-model="updatedTask.title" type="text" id="title" required />
+        <p>
+          Words: {{ titleWordCount }}/15
+          <span v-if="titleWordCount > 15" style="color: red;">
+            (Exceeds limit!)
+          </span>
+        </p>
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <input v-model="updatedTask.description" type="text" id="description" required />
+        <p>
+          Words: {{ descriptionWordCount }}/50
+          <span v-if="descriptionWordCount > 50" style="color: red;">
+            (Exceeds limit!)
+          </span>
+        </p>
+      </div>
+      <div>
+        <label for="completed">Completed:</label>
+        <input v-model="updatedTask.completed" type="checkbox" id="completed" />
+      </div>
+      <button type="submit" :disabled="titleWordCount > 15 || descriptionWordCount > 50">
+        Save Changes
+      </button>
+      <button type="button" @click="$emit('cancel-edit')">Cancel</button>
+    </form>
+  </div>
+</template>
 
 <script>
 import axios from "axios";
@@ -211,13 +111,15 @@ export default {
 </script>
 
 <style scoped>
-.editTaskForm{
+.editTaskForm {
   display: flex;
   flex-direction: column;
 
 }
+
 form {
-  margin: auto; /* Center form horizontally */
+  margin: auto;
+  /* Center form horizontally */
   max-width: 400px;
   padding: 20px;
   border: 1px solid var(--text-color);
@@ -226,7 +128,8 @@ form {
   color: var(--text-color);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column; /* Align items vertically */
+  flex-direction: column;
+  /* Align items vertically */
   justify-content: center;
 }
 
@@ -234,7 +137,7 @@ div {
   display: flex;
   justify-content: center;
   align-items: center;
-margin: auto;
+  margin: auto;
   /* min-height: 100vh;  */
   /* Full height of the viewport */
 }
