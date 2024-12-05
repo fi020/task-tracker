@@ -71,10 +71,22 @@ form {
   max-width: 300px;
   margin: auto;
   /* color: white; */
+  align-items: center;
+
 }
 
 input {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  padding: 5px;
+
+
+}
+form button{
+  width: 100%;
+  max-width: 200px;
+  
+
 }
 
 button {
