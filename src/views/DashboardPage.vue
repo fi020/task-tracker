@@ -6,7 +6,8 @@
     <button @click="showCreateTaskForm = true">Create New Task</button>
     <!-- Task List -->
     <ul v-if="tasks.length > 0">
-      <li v-for="task in tasks" :key="task.id">
+      <li v-for="task in sortedTasks" :key="task.id">
+      <!-- <li v-for="task in tasks" :key="task.id"> -->
         <div>
           Title: 
           {{ getTruncatedTitle(task.title) }}
@@ -66,6 +67,12 @@ export default {
   },
   async created() {
     this.checkAuthentication();
+  },
+  computed: {
+    sortedTasks() {
+      // Sort tasks by createdAt in descending order
+      return [...this.tasks].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    },
   },
   methods: {
     // Authentication check
