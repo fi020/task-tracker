@@ -76,6 +76,7 @@ export default {
 :root {
   --bg-color: #ffffff;
   --text-color: #2c3e50;
+  --text-date-color: #555;
   --navbar-bg-color: #42b983;
   --navbar-text-color: white;
 }
@@ -83,6 +84,7 @@ export default {
 [data-theme='dark'] {
   --bg-color: #2c3e50;
   --text-color: #dfffe6;
+  --text-date-color: #ecf0f1;
   --navbar-bg-color: #1b2735;
   --navbar-text-color: #dfffe6;
 }
