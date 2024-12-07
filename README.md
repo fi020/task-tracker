@@ -1,11 +1,27 @@
 ## to run on local follow below steps
 add env file
+
 VUE_APP_API_URL=your_localhost_backend
+
 run the command npm run serve
 
 ## to run on local follow above ^ steps
 
 # f-tt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Project setup
 ```
