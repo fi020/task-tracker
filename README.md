@@ -1,3 +1,4 @@
+connecting to the server (backend) for the first time takes time may be because keeping the server open for 24/7 when it is not in use so the server might be partily off so while signup or login please wait a minute so the backend get started.
 ## to run on local follow below steps
 add env file
 

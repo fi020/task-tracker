@@ -4,9 +4,17 @@
     <h2>Your Tasks</h2>
     <!-- Create Task Button -->
     <button @click="showCreateTaskForm = true">Create New Task</button>
+     <!-- Filter Buttons -->
+     <div class="filter-buttons">
+      <button @click="setFilter('all')">All Tasks</button>
+      <button @click="setFilter('completed')">Completed</button>
+      <button @click="setFilter('uncompleted')">Uncompleted</button>
+      <button @click="setFilter('date')">Sort by Date</button>
+    </div>
     <!-- Task List -->
     <ul v-if="tasks.length > 0">
-      <li v-for="task in sortedTasks" :key="task.id">
+      <li v-for="task in filteredAndSortedTasks" :key="task.id">
+      <!-- <li v-for="task in sortedTasks" :key="task.id"> -->
       <!-- <li v-for="task in tasks" :key="task.id"> -->
         <div>
           Title: 
@@ -17,6 +25,10 @@
           {{ getTruncatedDescription(task.description) }}
         </div>
         <div>Completed: {{ task.completed }}</div>
+        <div class="task-dates">
+        <small>Created: {{ formatDate(task.createdAt) }}</small> | 
+        <small>Updated: {{ formatDate(task.updatedAt) }}</small>
+      </div>
         <button @click="openEditForm(task)">Edit</button>
         <button @click="openDeleteDialog(task._id)">Delete</button>
       </li>
@@ -63,18 +75,47 @@ export default {
       taskToDelete: null, // ID of the task to delete
       maxDescriptionLength: 60, // Maximum length for truncated descriptions
       maxTitleLength: 23,
+      filter: 'all',  // Default filter (all tasks)
+
     };
   },
   async created() {
     this.checkAuthentication();
   },
   computed: {
-    sortedTasks() {
-      // Sort tasks by createdAt in descending order
-      return [...this.tasks].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    },
+    filteredAndSortedTasks() {
+  let filteredTasks = [...this.tasks];
+
+  // Apply filter based on selected filter type
+  if (this.filter === 'completed') {
+    filteredTasks = filteredTasks.filter(task => task.completed);
+  } else if (this.filter === 'uncompleted') {
+    filteredTasks = filteredTasks.filter(task => !task.completed);
+  }
+
+  // Sort: Incomplete tasks first, then by createdAt (newest first)
+  filteredTasks.sort((a, b) => {
+    // Prioritize incomplete tasks first (false comes before true)
+    if (a.completed === b.completed) {
+      // If both have the same completion status, sort by createdAt
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+    // Incomplete tasks (`false`) should come before completed tasks (`true`)
+    return a.completed - b.completed;
+  });
+
+  return filteredTasks;
+}
   },
   methods: {
+    setFilter(filterType) {
+      this.filter = filterType;
+    },
+    formatDate(date) {
+      if (!date) return "N/A";
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Date(date).toLocaleDateString("en-US", options);
+    },
     // Authentication check
     async checkAuthentication() {
       try {
@@ -239,6 +280,23 @@ button:last-child {
   background-color: #e74c3c;
   /* Red color for delete button */
 }
+.filter-buttons {
+  margin: 16px 0;
+}
+
+.filter-buttons button {
+  margin-right: 10px;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-buttons button:hover {
+  background-color: #2980b9;
+}
 
 ul {
   /* color: white; */
@@ -248,5 +306,10 @@ ul {
 
 li {
   padding: 5px 0;
+}
+.task-dates {
+  font-size: 0.8em;
+  color: var(--text-date-color);
+  margin-top: 8px;
 }
 </style>
