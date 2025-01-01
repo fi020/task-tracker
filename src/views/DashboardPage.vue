@@ -4,8 +4,8 @@
     <h2>Your Tasks</h2>
     <!-- Create Task Button -->
     <button @click="showCreateTaskForm = true">Create New Task</button>
-     <!-- Filter Buttons -->
-     <div class="filter-buttons">
+    <!-- Filter Buttons -->
+    <div class="filter-buttons">
       <button @click="setFilter('all')">All Tasks</button>
       <button @click="setFilter('completed')">Completed</button>
       <button @click="setFilter('uncompleted')">Uncompleted</button>
@@ -14,10 +14,10 @@
     <!-- Task List -->
     <ul v-if="tasks.length > 0">
       <li v-for="task in filteredAndSortedTasks" :key="task.id">
-      <!-- <li v-for="task in sortedTasks" :key="task.id"> -->
-      <!-- <li v-for="task in tasks" :key="task.id"> -->
+        <!-- <li v-for="task in sortedTasks" :key="task.id"> -->
+        <!-- <li v-for="task in tasks" :key="task.id"> -->
         <div>
-          Title: 
+          Title:
           {{ getTruncatedTitle(task.title) }}
         </div>
         <div>
@@ -26,9 +26,9 @@
         </div>
         <div>Completed: {{ task.completed }}</div>
         <div class="task-dates">
-        <small>Created: {{ formatDate(task.createdAt) }}</small> | 
-        <small>Updated: {{ formatDate(task.updatedAt) }}</small>
-      </div>
+          <small>Created: {{ formatDate(task.createdAt) }}</small> |
+          <small>Updated: {{ formatDate(task.updatedAt) }}</small>
+        </div>
         <button @click="openEditForm(task)">Edit</button>
         <button @click="openDeleteDialog(task._id)">Delete</button>
       </li>
@@ -84,28 +84,28 @@ export default {
   },
   computed: {
     filteredAndSortedTasks() {
-  let filteredTasks = [...this.tasks];
+      let filteredTasks = [...this.tasks];
 
-  // Apply filter based on selected filter type
-  if (this.filter === 'completed') {
-    filteredTasks = filteredTasks.filter(task => task.completed);
-  } else if (this.filter === 'uncompleted') {
-    filteredTasks = filteredTasks.filter(task => !task.completed);
-  }
+      // Apply filter based on selected filter type
+      if (this.filter === 'completed') {
+        filteredTasks = filteredTasks.filter(task => task.completed);
+      } else if (this.filter === 'uncompleted') {
+        filteredTasks = filteredTasks.filter(task => !task.completed);
+      }
 
-  // Sort: Incomplete tasks first, then by createdAt (newest first)
-  filteredTasks.sort((a, b) => {
-    // Prioritize incomplete tasks first (false comes before true)
-    if (a.completed === b.completed) {
-      // If both have the same completion status, sort by createdAt
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      // Sort: Incomplete tasks first, then by createdAt (newest first)
+      filteredTasks.sort((a, b) => {
+        // Prioritize incomplete tasks first (false comes before true)
+        if (a.completed === b.completed) {
+          // If both have the same completion status, sort by createdAt
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        // Incomplete tasks (`false`) should come before completed tasks (`true`)
+        return a.completed - b.completed;
+      });
+
+      return filteredTasks;
     }
-    // Incomplete tasks (`false`) should come before completed tasks (`true`)
-    return a.completed - b.completed;
-  });
-
-  return filteredTasks;
-}
   },
   methods: {
     setFilter(filterType) {
@@ -232,15 +232,22 @@ ul {
   display: flex;
   padding: 50px;
   justify-content: center;
-  flex-wrap: wrap; /* Allows items to wrap to the next row */
+  flex-wrap: wrap;
+  /* Allows items to wrap to the next row */
 
 }
-li{
+
+li {
   margin: 50px;
   /* gap: 16px; */
+  border: 2px solid;
+  border-color: var(--border-color);
+  
+  border-radius: 20px;
 }
+
 @media (max-width: 768px) {
-  ul{
+  ul {
     flex-direction: column;
   }
 }
@@ -280,6 +287,7 @@ button:last-child {
   background-color: #e74c3c;
   /* Red color for delete button */
 }
+
 .filter-buttons {
   margin: 16px 0;
 }
@@ -307,6 +315,7 @@ ul {
 li {
   padding: 5px 0;
 }
+
 .task-dates {
   font-size: 0.8em;
   color: var(--text-date-color);

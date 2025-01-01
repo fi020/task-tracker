@@ -5,12 +5,15 @@ import LoginPage from '../views/LoginPage.vue';
 import ProfilePage from '../views/ProfilePage.vue';
 // import DashboardPage from '../views/DashboardPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
+import SettingsPage from '../views/SettingsPage.vue';
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
   { path: '/signup', name: 'Signup', component: SignupPage },
   { path: '/login', name: 'Login', component: LoginPage },
   { path: '/profile', name: 'Profile', component: ProfilePage },
   { path: '/dashboard', name: 'Dashboard', component: DashboardPage },
+  { path: "/settings", component: SettingsPage },
+
   // { path: "/profile", component: ProfilePage },
 
   // { path: "/dashboard", component: DashboardPage },

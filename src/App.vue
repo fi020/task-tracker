@@ -6,20 +6,24 @@
         <router-link to="/">TaskTracker</router-link>
       </div>
       <ul class="navbar-links">
-        <li><router-link to="/" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Home</router-link></li>
-        <li v-if="!isLoggedIn"><router-link to="/signup" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Signup</router-link></li>
-        <li v-if="!isLoggedIn"><router-link to="/login" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Login</router-link></li>
-        <li v-if="isLoggedIn"><router-link to="/profile" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Profile</router-link></li>
-        <li v-if="isLoggedIn"><router-link to="/dashboard" :class="{'dark-theme': isDarkMode, 'light-theme': !isDarkMode}">Dashboard</router-link></li>
+        <li><router-link to="/" :class="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">Home</router-link></li>
+        <li v-if="!isLoggedIn"><router-link to="/signup"
+            :class="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">Signup</router-link></li>
+        <li v-if="!isLoggedIn"><router-link to="/login"
+            :class="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">Login</router-link></li>
+        <li v-if="isLoggedIn"><router-link to="/profile"
+            :class="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">Profile</router-link></li>
+        <li v-if="isLoggedIn"><router-link to="/dashboard"
+            :class="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">Dashboard</router-link></li>
       </ul>
-<div class="right-buttons">
+      <div class="right-buttons">
 
-  <button class="logout" v-if="isLoggedIn" @click="logout">Logout</button>
-  
-  <button class="theme-toggle" @click="toggleTheme">
-    {{ isDarkMode ? '☀️' : '🌙' }}
-  </button>
-</div>
+        <button class="logout" v-if="isLoggedIn" @click="logout">Logout</button>
+
+        <button class="theme-toggle" @click="toggleTheme">
+          {{ isDarkMode ? '☀️' : '🌙' }}
+        </button>
+      </div>
     </nav>
 
     <router-view></router-view>
@@ -61,12 +65,12 @@ export default {
       console.log('Login status updated:', this.isLoggedIn);
     },
     logout() {
-        // Clear token and redirect to login
-        localStorage.removeItem("token");
-        window.dispatchEvent(new Event('storage')); // Trigger the storage event
+      // Clear token and redirect to login
+      localStorage.removeItem("token");
+      window.dispatchEvent(new Event('storage')); // Trigger the storage event
 
-        this.$router.push("/login");
-      },
+      this.$router.push("/login");
+    },
   },
 };
 </script>
@@ -79,6 +83,9 @@ export default {
   --text-date-color: #555;
   --navbar-bg-color: #42b983;
   --navbar-text-color: white;
+  --task-border-color: black;
+  --user-nav-text-color: green;
+  --user-nav-text-background-color: rgb(122, 160, 122);
 }
 
 [data-theme='dark'] {
@@ -87,6 +94,9 @@ export default {
   --text-date-color: #ecf0f1;
   --navbar-bg-color: #1b2735;
   --navbar-text-color: #dfffe6;
+  --task-border-color: white;
+  --user-nav-text-color: #dfffe6;
+  --user-nav-text-background-color: #1b2735;
 }
 
 #app {
@@ -135,15 +145,16 @@ export default {
 }
 
 .navbar-links a:hover {
-/* .navbar-links a.light-theme:hover { */
+  /* .navbar-links a.light-theme:hover { */
   color: var(--bg-color);
   /* color: #050504; Dark mode hover color */
   /* background-color: var(--navbar-text-color); */
 }
+
 /* .navbar-links a.light-theme:hover {
   color: #42b983;
 } */
-.right-buttons button{
+.right-buttons button {
   margin: 0 4px;
 }
 
@@ -173,6 +184,7 @@ export default {
   font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
 }
+
 .logout:hover {
   background-color: var(--navbar-text-color);
   color: var(--navbar-bg-color);
