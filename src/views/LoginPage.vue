@@ -16,8 +16,14 @@
     <button class="signup">
       <router-link to="/signup">Signup</router-link>
     </button>
+
+    <!-- Forgot Password Button -->
+    <div>
+      <button @click="handleForgotPassword">Forgot Password?</button>
+    </div>
   </div>
 </template>
+
 
 <script>
 import axios from "axios";
@@ -47,19 +53,40 @@ export default {
         localStorage.setItem("token", token);
 
         // Update the global login state
-        // this.$emit("logged-in", true); // Emit event to notify login
         window.dispatchEvent(new Event('storage')); // Trigger the storage event
 
-        // Redirect to the profile page
+        // Redirect to the dashboard
         this.$router.push("/dashboard");
       } catch (error) {
         console.error("Login error:", error.response ? error.response.data : error.message);
-        alert("Login failed. Please check your credentials and try again. from frontend");
+        alert("Login failed. Please check your credentials and try again.");
+      }
+    },
+
+    async handleForgotPassword() {
+      const email = prompt("Please enter your email address to reset your password:");
+      if (!email) return; // If no email is entered, do nothing
+
+      try {
+        const apiUrl = process.env.VUE_APP_API_URL;
+        const response = await axios.post(`${apiUrl}/settings/forgot-password`, { email });
+
+        // Success message
+        alert(response.data.message || "Password reset link has been sent to your email.");
+      } catch (error) {
+        console.error("Forgot password error:", error.response ? error.response.data : error.message);
+        const errorMessage = error.response?.data?.message || "Error resetting password. Please try again.";
+        const errorData = error.response?.data;
+        console.log("Error data:", errorData);
+        
+        alert(errorMessage);
+
       }
     },
   },
 };
 </script>
+
 
 <style scoped>
 form {
@@ -92,6 +119,7 @@ button {
   cursor: pointer;
   border-radius: 5px;
   /* width: 10px; */
+  margin-top: 5px;
 
 }
 button a{

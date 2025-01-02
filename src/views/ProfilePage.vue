@@ -39,7 +39,8 @@ export default {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      console.log("User details:", response.data);
+      
       // Set user details
       this.username = response.data.username;
     } catch (error) {
