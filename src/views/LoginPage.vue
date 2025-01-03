@@ -72,7 +72,7 @@ export default {
         const response = await axios.post(`${apiUrl}/settings/forgot-password`, { email });
 
         // Success message
-        alert(response.data.message || "Password reset link has been sent to your email.");
+        alert(response.data.message || "Password has been sent to your email.");
       } catch (error) {
         console.error("Forgot password error:", error.response ? error.response.data : error.message);
         const errorMessage = error.response?.data?.message || "Error resetting password. Please try again.";
