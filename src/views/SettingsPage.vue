@@ -46,29 +46,32 @@ export default {
         };
     },
     async created() {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                throw new Error("No token found. Please log in.");
-            }
-
-            const apiUrl = process.env.VUE_APP_API_URL;
-            const response = await axios.get(`${apiUrl}/settings/data`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            // Set the user's email
-            this.email = response.data.email;
-            this.emailVerified = response.data.emailVerified;
-        } catch (error) {
-            console.error("Error fetching user details:", error.message);
-            alert("Session expired or invalid. Please log in again.");
-            this.$router.push("/login");
-        }
+        await this.fetchUserData();
     },
     methods: {
+        async fetchUserData() {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    throw new Error("No token found. Please log in.");
+                }
+
+                const apiUrl = process.env.VUE_APP_API_URL;
+                const response = await axios.get(`${apiUrl}/settings/data`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                // Set the user's email and verification status
+                this.email = response.data.email;
+                this.emailVerified = response.data.emailVerified;
+            } catch (error) {
+                console.error("Error fetching user details:", error.message);
+                alert("Session expired or invalid. Please log in again.");
+                this.$router.push("/login");
+            }
+        },
         async addEmail() {
             const newEmail = prompt("Enter your email:");
             if (!newEmail) return;
@@ -88,8 +91,7 @@ export default {
 
                 alert("Email added successfully! Please verify it using the OTP sent to your email.");
 
-                // Send OTP
-                this.otpSent = true;
+                await this.fetchUserData();
             } catch (error) {
                 console.error("Error:", error.message);
                 alert(error.response?.data?.message || "An error occurred. Please try again.");
