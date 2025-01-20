@@ -1,97 +1,55 @@
-<template>
-  <div>
-    <h1>Dashboard</h1>
-    <h2>Your Tasks are</h2>
-
-    <!-- Filter Buttons -->
-    <filter-buttons @filter-changed="setFilter" />
-
-    <!-- Task List -->
-    <task-list :tasks="filteredAndSortedTasks" @edit-task="openEditForm" @delete-task="openDeleteDialog" />
-
-    <!-- Create Task Modal -->
-    <!-- <create-task-modal :isVisible="showCreateTaskForm" @task-created="handleTaskCreated" @close="closeCreateTaskForm" /> -->
-
-    
-    <!-- Edit Task Modal -->
-    <!-- <edit-task-modal :isVisible="!!editTaskData" :task="editTaskData" @task-updated="handleTaskUpdated"
-      @close="closeEditTaskForm" /> -->
-
-    <!-- Confirmation Dialog -->
-    <confirm-dialog :isVisible="isDialogVisible" @confirm="deleteTaskConfirmed" @cancel="closeDeleteDialog" />
-  </div>
-</template>
-
-<script>
-import FilterButtons from '@/components/FilterButtons.vue';
-import TaskList from '@/components/TaskList.vue';
-// import CreateTaskModal from '@/components/CreateTaskModal.vue';
-// import EditTaskModal from '@/components/EditTaskModal.vue';
-import ConfirmDialog from '@/views/ConfirmDialog.vue';
-import axios from 'axios';
-// import CreateTask from "@/views/CreateTask.vue"; // Import CreateTask component
-// import EditTask from "@/views/EditTask.vue"; // Import EditTask component
-// import CreateTaskModal from "@/components/CreateTaskModal.vue"; // Import CreateTaskModal component
-// import EditTaskModal from "@/components/EditTaskModal.vue"; // Import EditTaskModal component
-
+import axios from "axios";
+import CreateTask from "../CreateTask.vue";
+import EditTask from "../EditTask.vue";
+import ConfirmDialog from "../ConfirmDialog.vue";
 
 export default {
   name: "DashboardPage",
-  components: {
-    FilterButtons,
-    TaskList,
-    // CreateTaskModal,
-    // EditTaskModal,
-    ConfirmDialog,
-    // CreateTask,
-    // EditTask,
-  },
+  components: { CreateTask, EditTask, ConfirmDialog },
   data() {
     return {
-      tasks: [],
-      showCreateTaskForm: false,
-      editTaskData: null,
-      isDialogVisible: false,
-      taskToDelete: null,
-      filter: 'all',
+      tasks: [], // Task list
+      showCreateTaskForm: false, // Toggle create task modal
+      editTaskData: null, // Data for the task being edited
+      isDialogVisible: false, // Toggle confirmation dialog
+      taskToDelete: null, // ID of the task to delete
+      maxDescriptionLength: 60, // Maximum length for truncated descriptions
+      maxTitleLength: 23,
+      filter: 'all',  // Default filter (all tasks)
     };
+  },
+  async created() {
+    this.checkAuthentication();
   },
   computed: {
     filteredAndSortedTasks() {
       let filteredTasks = [...this.tasks];
 
-      // Apply filter based on selected filter type
       if (this.filter === 'completed') {
         filteredTasks = filteredTasks.filter(task => task.completed);
       } else if (this.filter === 'uncompleted') {
         filteredTasks = filteredTasks.filter(task => !task.completed);
       }
 
-      // Sort: Incomplete tasks first, then by createdAt (newest first)
       filteredTasks.sort((a, b) => {
-        // Prioritize incomplete tasks first (false comes before true)
         if (a.completed === b.completed) {
-          // If both have the same completion status, sort by createdAt
           return new Date(b.createdAt) - new Date(a.createdAt);
         }
-        // Incomplete tasks (`false`) should come before completed tasks (`true`)
         return a.completed - b.completed;
       });
 
       return filteredTasks;
-    },
+    }
   },
   methods: {
     setFilter(filterType) {
       this.filter = filterType;
     },
-    // Other methods...
     formatDate(date) {
       if (!date) return "N/A";
       const options = { year: "numeric", month: "short", day: "numeric" };
       return new Date(date).toLocaleDateString("en-US", options);
     },
-    // Authentication check
     async checkAuthentication() {
       try {
         const token = localStorage.getItem("token");
@@ -105,14 +63,10 @@ export default {
         this.$router.push("/login");
       }
     },
-
-    // Fetch all tasks
     async fetchTasks() {
       try {
         const token = localStorage.getItem("token");
         const apiUrl = process.env.VUE_APP_API_URL;
-        console.log("Token:", localStorage.getItem("token"));
-        console.log("API URL:", process.env.VUE_APP_API_URL);
 
         const response = await axios.get(`${apiUrl}/tasks`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -122,52 +76,34 @@ export default {
         console.error("Error fetching tasks:", error.message);
       }
     },
-
-    // Open the Create Task modal
     openCreateTaskForm() {
       this.showCreateTaskForm = true;
     },
-
-    // Close the Create Task modal
     closeCreateTaskForm() {
       this.showCreateTaskForm = false;
     },
-
-    // Open the Edit Task modal
     openEditForm(task) {
       this.editTaskData = { ...task };
     },
-
-    // Close the Edit Task modal
     closeEditTaskForm() {
       this.editTaskData = null;
     },
-
-    // Handle task creation
     handleTaskCreated() {
       this.closeCreateTaskForm();
       this.fetchTasks();
     },
-
-    // Handle task update
     handleTaskUpdated() {
       this.closeEditTaskForm();
       this.fetchTasks();
     },
-
-    // Open delete confirmation dialog
     openDeleteDialog(taskId) {
       this.taskToDelete = taskId;
       this.isDialogVisible = true;
     },
-
-    // Close delete confirmation dialog
     closeDeleteDialog() {
       this.isDialogVisible = false;
       this.taskToDelete = null;
     },
-
-    // Confirm and delete task
     async deleteTaskConfirmed() {
       try {
         const token = localStorage.getItem("token");
@@ -180,11 +116,8 @@ export default {
       } catch (error) {
         console.error("Error deleting task:", error.message);
       }
-
       this.closeDeleteDialog();
     },
-
-    // Truncate long descriptions
     getTruncatedDescription(description) {
       return description.length > this.maxDescriptionLength
         ? description.substring(0, this.maxDescriptionLength) + "..."
@@ -197,4 +130,3 @@ export default {
     },
   },
 };
-</script>

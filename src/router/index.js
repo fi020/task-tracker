@@ -3,8 +3,8 @@ import HomePage from '../views/HomePage.vue';
 import SignupPage from '../views/SignupPage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import ProfilePage from '../views/ProfilePage.vue';
-// import DashboardPage from '../views/DashboardPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
+// import DashboardPage from '../views/Dashboard/DashboardPage.vue';
 import SettingsPage from '../views/SettingsPage.vue';
 const routes = [
   { path: '/', name: 'Home', component: HomePage },

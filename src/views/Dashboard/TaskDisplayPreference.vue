@@ -1,60 +1,86 @@
 <template>
   <div>
     <h1>Dashboard</h1>
-    <h2>Your Tasks are</h2>
-
+    <h2>Your Tasks</h2>
+    <!-- Create Task Button -->
+    <button @click="showCreateTaskForm = true">Create New Task</button>
     <!-- Filter Buttons -->
-    <filter-buttons @filter-changed="setFilter" />
-
+    <div class="filter-buttons">
+      <button @click="setFilter('all')">All Tasks</button>
+      <button @click="setFilter('completed')">Completed</button>
+      <button @click="setFilter('uncompleted')">Uncompleted</button>
+      <button @click="setFilter('date')">Sort by Date</button>
+    </div>
     <!-- Task List -->
-    <task-list :tasks="filteredAndSortedTasks" @edit-task="openEditForm" @delete-task="openDeleteDialog" />
+    <ul v-if="tasks.length > 0">
+      <li v-for="task in filteredAndSortedTasks" :key="task.id">
+        <!-- <li v-for="task in sortedTasks" :key="task.id"> -->
+        <!-- <li v-for="task in tasks" :key="task.id"> -->
+        <div>
+          Title:
+          {{ getTruncatedTitle(task.title) }}
+        </div>
+        <div>
+          Description:
+          {{ getTruncatedDescription(task.description) }}
+        </div>
+        <div>Completed: {{ task.completed }}</div>
+        <div class="task-dates">
+          <small>Created: {{ formatDate(task.createdAt) }}</small> |
+          <small>Updated: {{ formatDate(task.updatedAt) }}</small>
+        </div>
+        <button @click="openEditForm(task)">Edit</button>
+        <button @click="openDeleteDialog(task._id)">Delete</button>
+      </li>
+    </ul>
+    <p v-else>No tasks available.</p>
+
+
 
     <!-- Create Task Modal -->
-    <!-- <create-task-modal :isVisible="showCreateTaskForm" @task-created="handleTaskCreated" @close="closeCreateTaskForm" /> -->
+    <div v-if="showCreateTaskForm" class="modal" @click.self="closeCreateTaskForm">
+      <div class="modal-content">
+        <create-task @task-created="handleTaskCreated" @cancel="closeCreateTaskForm" />
+      </div>
+    </div>
 
-    
     <!-- Edit Task Modal -->
-    <!-- <edit-task-modal :isVisible="!!editTaskData" :task="editTaskData" @task-updated="handleTaskUpdated"
-      @close="closeEditTaskForm" /> -->
+    <div v-if="editTaskData" class="modal" @click.self="closeEditTaskForm">
+      <div class="modal-content">
+        <edit-task :task="editTaskData" @task-updated="handleTaskUpdated" @cancel-edit="closeEditTaskForm" />
+      </div>
+    </div>
 
     <!-- Confirmation Dialog -->
     <confirm-dialog :isVisible="isDialogVisible" @confirm="deleteTaskConfirmed" @cancel="closeDeleteDialog" />
   </div>
 </template>
 
-<script>
-import FilterButtons from '@/components/FilterButtons.vue';
-import TaskList from '@/components/TaskList.vue';
-// import CreateTaskModal from '@/components/CreateTaskModal.vue';
-// import EditTaskModal from '@/components/EditTaskModal.vue';
-import ConfirmDialog from '@/views/ConfirmDialog.vue';
-import axios from 'axios';
-// import CreateTask from "@/views/CreateTask.vue"; // Import CreateTask component
-// import EditTask from "@/views/EditTask.vue"; // Import EditTask component
-// import CreateTaskModal from "@/components/CreateTaskModal.vue"; // Import CreateTaskModal component
-// import EditTaskModal from "@/components/EditTaskModal.vue"; // Import EditTaskModal component
 
+<script>
+import axios from "axios";
+import CreateTask from "@/views/CreateTask.vue";
+import EditTask from "@/views/EditTask.vue";
+import ConfirmDialog from "@/views/ConfirmDialog.vue";
 
 export default {
   name: "DashboardPage",
-  components: {
-    FilterButtons,
-    TaskList,
-    // CreateTaskModal,
-    // EditTaskModal,
-    ConfirmDialog,
-    // CreateTask,
-    // EditTask,
-  },
+  components: { CreateTask, EditTask, ConfirmDialog },
   data() {
     return {
-      tasks: [],
-      showCreateTaskForm: false,
-      editTaskData: null,
-      isDialogVisible: false,
-      taskToDelete: null,
-      filter: 'all',
+      tasks: [], // Task list
+      showCreateTaskForm: false, // Toggle create task modal
+      editTaskData: null, // Data for the task being edited
+      isDialogVisible: false, // Toggle confirmation dialog
+      taskToDelete: null, // ID of the task to delete
+      maxDescriptionLength: 60, // Maximum length for truncated descriptions
+      maxTitleLength: 23,
+      filter: 'all',  // Default filter (all tasks)
+
     };
+  },
+  async created() {
+    this.checkAuthentication();
   },
   computed: {
     filteredAndSortedTasks() {
@@ -79,13 +105,12 @@ export default {
       });
 
       return filteredTasks;
-    },
+    }
   },
   methods: {
     setFilter(filterType) {
       this.filter = filterType;
     },
-    // Other methods...
     formatDate(date) {
       if (!date) return "N/A";
       const options = { year: "numeric", month: "short", day: "numeric" };
@@ -111,8 +136,6 @@ export default {
       try {
         const token = localStorage.getItem("token");
         const apiUrl = process.env.VUE_APP_API_URL;
-        console.log("Token:", localStorage.getItem("token"));
-        console.log("API URL:", process.env.VUE_APP_API_URL);
 
         const response = await axios.get(`${apiUrl}/tasks`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -198,3 +221,104 @@ export default {
   },
 };
 </script>
+
+
+
+
+
+
+<style scoped>
+ul {
+  display: flex;
+  padding: 50px;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* Allows items to wrap to the next row */
+
+}
+
+li {
+  margin: 50px;
+  /* gap: 16px; */
+  border: 2px solid;
+  border-color: var(--border-color);
+  
+  border-radius: 20px;
+}
+
+@media (max-width: 768px) {
+  ul {
+    flex-direction: column;
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--bg-color);
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  background-color: #42b983;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+button:last-child {
+  background-color: #e74c3c;
+  /* Red color for delete button */
+}
+
+.filter-buttons {
+  margin: 16px 0;
+}
+
+.filter-buttons button {
+  margin-right: 10px;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-buttons button:hover {
+  background-color: #2980b9;
+}
+
+ul {
+  /* color: white; */
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  padding: 5px 0;
+}
+
+.task-dates {
+  font-size: 0.8em;
+  color: var(--text-date-color);
+  margin-top: 8px;
+}
+</style>
